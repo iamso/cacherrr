@@ -38,7 +38,7 @@ export default class Cacherrr {
         error = new Error(`${path} is not cached yet`);
       }
       // if cache is expired
-      else if (entry.timestamp + this.expire < (+new Date())) {
+      else if (entry.expires < +new Date()) {
         error = new Error(`cache for ${path} is expired`);
       }
 
@@ -64,8 +64,10 @@ export default class Cacherrr {
     return new Promise((resolve, reject) => {
       // if path is not excluded, create entry and resolve with cached data
       if (this.exclude.indexOf(path) < 0) {
+        let now = +new Date();
         this.entries[path] = {
-          timestamp: +new Date(),
+          timestamp: now,
+          expires: now + this.expire,
           data: data,
         }
         resolve(data);
