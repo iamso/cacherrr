@@ -1,0 +1,17 @@
+{
+  "name": "cacherrr",
+  "repository": "iamso/cacherrr",
+  "description": "simple caching for the browser",
+  "version": "0.1.0",
+  "keywords": [
+    "cache",
+    "caching"
+  ],
+  "scripts": [
+    "dist/cacherrr.js",
+    "dist/cacherrr.min.js",
+    "dist/cacherrr.next.js",
+    "dist/cacherrr.next.min.js"
+  ],
+  "license": "MIT"
+}
