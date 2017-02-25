@@ -7,9 +7,9 @@ export default class Cacherrr {
 
   /**
    * Cacherrr constructor
-   * @param  {Number} expire  - time for cache to expire
-   * @param  {Object} exclude - array of paths to be excluded from caching
-   * @return {Object}         - a Cacherrr instance
+   * @param  {Number} [expire]  - time for cache to expire
+   * @param  {Object} [exclude] - array of paths to be excluded from caching
+   * @return {Object}           - a Cacherrr instance
    */
   constructor(expire = 0, exclude = []) {
     // time for cache to expire
