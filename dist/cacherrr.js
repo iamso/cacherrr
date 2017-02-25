@@ -1,5 +1,5 @@
 /*!
- * cacherrr - version 0.1.0
+ * cacherrr - version 0.2.0
  *
  * Made with ❤ by Steve Ottoz so@dev.so
  *
@@ -56,9 +56,9 @@
 
     /**
      * Cacherrr constructor
-     * @param  {Number} expire  - time for cache to expire
-     * @param  {Object} exclude - array of paths to be excluded from caching
-     * @return {Object}         - a Cacherrr instance
+     * @param  {Number} [expire]  - time for cache to expire
+     * @param  {Object} [exclude] - array of paths to be excluded from caching
+     * @return {Object}           - a Cacherrr instance
      */
     function Cacherrr() {
       var expire = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
@@ -89,18 +89,23 @@
         return new Promise(function (resolve, reject) {
           var entry = _this.entries[path];
           var error = void 0;
-          // if path is excluded
-          if (_this.exclude.indexOf(path) > -1) {
-            error = new Error(path + ' is excluded from caching');
+
+          // if path is empty
+          if (path === undefined) {
+            error = new Error('no path provided');
           }
-          // if entry exists
-          else if (!entry) {
-              error = new Error(path + ' is not cached yet');
+          // if path is excluded
+          else if (_this.exclude.indexOf(path) > -1) {
+              error = new Error(path + ' is excluded from caching');
             }
-            // if cache is expired
-            else if (entry.timestamp + _this.expire < +new Date()) {
-                error = new Error('cache for ' + path + ' is expired');
+            // if entry exists
+            else if (!entry) {
+                error = new Error(path + ' is not cached yet');
               }
+              // if cache is expired
+              else if (entry.expires < +new Date()) {
+                  error = new Error('cache for ' + path + ' is expired');
+                }
 
           // reject promise if error
           if (error) {
@@ -118,18 +123,37 @@
       value: function set(path, data) {
         var _this2 = this;
 
+        var expire = arguments.length <= 2 || arguments[2] === undefined ? this.expire : arguments[2];
+
         return new Promise(function (resolve, reject) {
-          // if path is not excluded, create entry and resolve with cached data
-          if (_this2.exclude.indexOf(path) < 0) {
-            _this2.entries[path] = {
-              timestamp: +new Date(),
-              data: data
-            };
-            resolve(data);
+          var now = +new Date();
+          var error = void 0;
+
+          // if path is empty
+          if (path === undefined) {
+            error = new Error('no path provided');
           }
-          // otherwise reject promise
+          // if data is empty
+          else if (!data) {
+              error = new Error('no data provided');
+            }
+            // if path is excluded
+            else if (_this2.exclude.indexOf(path) > -1) {
+                error = new Error(path + ' is excluded from caching');
+              }
+
+          // reject promise if error
+          if (error) {
+            reject(error);
+          }
+          // otherwise cache path and resolve with cached data
           else {
-              reject(new Error(path + ' is not cached yet'));
+              _this2.entries[path] = {
+                timestamp: now,
+                expires: now + expire,
+                data: data
+              };
+              resolve(data);
             }
         });
       }

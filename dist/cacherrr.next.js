@@ -1,5 +1,5 @@
 /*!
- * cacherrr - version 0.1.0
+ * cacherrr - version 0.2.0
  *
  * Made with ❤ by Steve Ottoz so@dev.so
  *
@@ -15,9 +15,9 @@ export default class Cacherrr {
 
   /**
    * Cacherrr constructor
-   * @param  {Number} expire  - time for cache to expire
-   * @param  {Object} exclude - array of paths to be excluded from caching
-   * @return {Object}         - a Cacherrr instance
+   * @param  {Number} [expire]  - time for cache to expire
+   * @param  {Object} [exclude] - array of paths to be excluded from caching
+   * @return {Object}           - a Cacherrr instance
    */
   constructor(expire = 0, exclude = []) {
     // time for cache to expire
@@ -37,18 +37,23 @@ export default class Cacherrr {
     return new Promise((resolve, reject) => {
       const entry = this.entries[path];
       let error;
-      // if path is excluded
-      if (this.exclude.indexOf(path) > -1) {
-        error = new Error(`${ path } is excluded from caching`);
+
+      // if path is empty
+      if (path === undefined) {
+        error = new Error('no path provided');
       }
-      // if entry exists
-      else if (!entry) {
-          error = new Error(`${ path } is not cached yet`);
+      // if path is excluded
+      else if (this.exclude.indexOf(path) > -1) {
+          error = new Error(`${ path } is excluded from caching`);
         }
-        // if cache is expired
-        else if (entry.timestamp + this.expire < +new Date()) {
-            error = new Error(`cache for ${ path } is expired`);
+        // if entry exists
+        else if (!entry) {
+            error = new Error(`${ path } is not cached yet`);
           }
+          // if cache is expired
+          else if (entry.expires < +new Date()) {
+              error = new Error(`cache for ${ path } is expired`);
+            }
 
       // reject promise if error
       if (error) {
@@ -64,23 +69,41 @@ export default class Cacherrr {
 
   /**
    * set cached data for a given path
-   * @param  {String} path - path
-   * @param  {Object} data - data to be cached
-   * @return {Promise}     - a promise
+   * @param  {String} path     - path
+   * @param  {Object} data     - data to be cached
+   * @param  {Object} [expire] - override expire time
+   * @return {Promise}         - a promise
    */
-  set(path, data) {
+  set(path, data, expire = this.expire) {
     return new Promise((resolve, reject) => {
-      // if path is not excluded, create entry and resolve with cached data
-      if (this.exclude.indexOf(path) < 0) {
-        this.entries[path] = {
-          timestamp: +new Date(),
-          data: data
-        };
-        resolve(data);
+      const now = +new Date();
+      let error;
+
+      // if path is empty
+      if (path === undefined) {
+        error = new Error('no path provided');
       }
-      // otherwise reject promise
+      // if data is empty
+      else if (!data) {
+          error = new Error('no data provided');
+        }
+        // if path is excluded
+        else if (this.exclude.indexOf(path) > -1) {
+            error = new Error(`${ path } is excluded from caching`);
+          }
+
+      // reject promise if error
+      if (error) {
+        reject(error);
+      }
+      // otherwise cache path and resolve with cached data
       else {
-          reject(new Error(`${ path } is not cached yet`));
+          this.entries[path] = {
+            timestamp: now,
+            expires: now + expire,
+            data: data
+          };
+          resolve(data);
         }
     });
   }
