@@ -56,18 +56,19 @@ export default class Cacherrr {
 
   /**
    * set cached data for a given path
-   * @param  {String} path - path
-   * @param  {Object} data - data to be cached
-   * @return {Promise}     - a promise
+   * @param  {String} path     - path
+   * @param  {Object} data     - data to be cached
+   * @param  {Object} [expire] - override expire time
+   * @return {Promise}         - a promise
    */
-  set(path, data) {
+  set(path, data, expire = this.expire) {
     return new Promise((resolve, reject) => {
       // if path is not excluded, create entry and resolve with cached data
       if (this.exclude.indexOf(path) < 0) {
         let now = +new Date();
         this.entries[path] = {
           timestamp: now,
-          expires: now + this.expire,
+          expires: now + expire,
           data: data,
         }
         resolve(data);
