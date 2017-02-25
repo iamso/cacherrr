@@ -29,8 +29,13 @@ export default class Cacherrr {
     return new Promise((resolve, reject) => {
       const entry = this.entries[path];
       let error;
+
+      // if path is empty
+      if (path === undefined) {
+        error = new Error('no path provided');
+      }
       // if path is excluded
-      if (this.exclude.indexOf(path) > -1) {
+      else if (this.exclude.indexOf(path) > -1) {
         error = new Error(`${path} is excluded from caching`);
       }
       // if entry exists
@@ -63,19 +68,34 @@ export default class Cacherrr {
    */
   set(path, data, expire = this.expire) {
     return new Promise((resolve, reject) => {
-      // if path is not excluded, create entry and resolve with cached data
-      if (this.exclude.indexOf(path) < 0) {
-        let now = +new Date();
+      const now = +new Date();
+      let error;
+
+      // if path is empty
+      if (path === undefined) {
+        error = new Error('no path provided');
+      }
+      // if data is empty
+      else if (!data) {
+        error = new Error('no data provided');
+      }
+      // if path is excluded
+      else if (this.exclude.indexOf(path) > -1) {
+        error = new Error(`${path} is excluded from caching`);
+      }
+
+      // reject promise if error
+      if (error) {
+        reject(error);
+      }
+      // otherwise cache path and resolve with cached data
+      else {
         this.entries[path] = {
           timestamp: now,
           expires: now + expire,
           data: data,
         }
         resolve(data);
-      }
-      // otherwise reject promise
-      else {
-        reject(new Error(`${path} is not cached yet`));
       }
     });
   }
