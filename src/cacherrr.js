@@ -38,7 +38,7 @@ export default class Cacherrr {
       else if (this.exclude.indexOf(path) > -1) {
         error = new Error(`${path} is excluded from caching`);
       }
-      // if entry exists
+      // if entry doesn't exist
       else if (!entry) {
         error = new Error(`${path} is not cached yet`);
       }
