@@ -1,5 +1,5 @@
 /*!
- * cacherrr - version 0.2.0
+ * cacherrr - version 0.2.1
  *
  * Made with ❤ by Steve Ottoz so@dev.so
  *
@@ -98,12 +98,12 @@
           else if (_this.exclude.indexOf(path) > -1) {
               error = new Error(path + ' is excluded from caching');
             }
-            // if entry exists
+            // if entry doesn't exist
             else if (!entry) {
                 error = new Error(path + ' is not cached yet');
               }
               // if cache is expired
-              else if (entry.expires < +new Date()) {
+              else if (entry.expires < Date.now()) {
                   error = new Error('cache for ' + path + ' is expired');
                 }
 
@@ -126,7 +126,7 @@
         var expire = arguments.length <= 2 || arguments[2] === undefined ? this.expire : arguments[2];
 
         return new Promise(function (resolve, reject) {
-          var now = +new Date();
+          var now = Date.now();
           var error = void 0;
 
           // if path is empty

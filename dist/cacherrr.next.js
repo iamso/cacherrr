@@ -1,5 +1,5 @@
 /*!
- * cacherrr - version 0.2.0
+ * cacherrr - version 0.2.1
  *
  * Made with ❤ by Steve Ottoz so@dev.so
  *
@@ -46,12 +46,12 @@ export default class Cacherrr {
       else if (this.exclude.indexOf(path) > -1) {
           error = new Error(`${ path } is excluded from caching`);
         }
-        // if entry exists
+        // if entry doesn't exist
         else if (!entry) {
             error = new Error(`${ path } is not cached yet`);
           }
           // if cache is expired
-          else if (entry.expires < +new Date()) {
+          else if (entry.expires < Date.now()) {
               error = new Error(`cache for ${ path } is expired`);
             }
 
@@ -76,7 +76,7 @@ export default class Cacherrr {
    */
   set(path, data, expire = this.expire) {
     return new Promise((resolve, reject) => {
-      const now = +new Date();
+      const now = Date.now();
       let error;
 
       // if path is empty
