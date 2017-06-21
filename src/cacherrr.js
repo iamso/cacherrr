@@ -43,7 +43,7 @@ export default class Cacherrr {
         error = new Error(`${path} is not cached yet`);
       }
       // if cache is expired
-      else if (entry.expires < +new Date()) {
+      else if (entry.expires < Date.now()) {
         error = new Error(`cache for ${path} is expired`);
       }
 
@@ -68,7 +68,7 @@ export default class Cacherrr {
    */
   set(path, data, expire = this.expire) {
     return new Promise((resolve, reject) => {
-      const now = +new Date();
+      const now = Date.now();
       let error;
 
       // if path is empty
