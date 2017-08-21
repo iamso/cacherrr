@@ -2,7 +2,7 @@
   "name": "cacherrr",
   "repository": "iamso/cacherrr",
   "description": "simple caching for the browser",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "keywords": [
     "cache",
     "caching"
