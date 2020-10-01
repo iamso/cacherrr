@@ -1,6 +1,6 @@
 {
   "name": "cacherrr",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "simple caching for the browser",
   "main": "dist/cacherrr.cjs.js",
   "module": "dist/cacherrr.esm.js",
