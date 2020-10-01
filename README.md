@@ -5,14 +5,6 @@ simple caching for the browser
 Install
 -------
 
-### With Bower
-
-```bash
-bower install cacherrr
-```
-
-### With NPM
-
 ```bash
 npm install cacherrr
 ```
